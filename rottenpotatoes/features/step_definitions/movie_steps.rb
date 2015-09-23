@@ -13,9 +13,17 @@ end
 #   on the same page
 
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
+  its_sorted = false
+  aString = page.body.to_s 
+       if aString.index(e1)!= nil && aString.index(e2) !=nil
+               if aString.index(e1) < aString.index(e2)
+                its_sorted = true
+               end
+       end
+       its_sorted.should be true
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
-  fail "Unimplemented"
+  #fail "Unimplemented"
 end
 
 # Make it easier to express checking or unchecking several boxes at once
