@@ -2,7 +2,7 @@
 
 Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
-    Movie.create(title: movie[:title], rating: movie[:rating], release_date: movie[:release_date])
+    Movie.create(movie)
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
   end
@@ -23,13 +23,35 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
-  # HINT: use String#split to split up the rating_list, then
-  #   iterate over the ratings and reuse the "When I check..." or
-  #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  fail "Unimplemented"
+  ratings = rating_list.split(%r{,\s*})
+  if uncheck
+    ratings.each do |r|
+      step "I uncheck \"ratings_#{r}\""
+    end
+  else
+    ratings.each do |r|
+      step "I check \"ratings_#{r}\""
+    end
+  end
 end
 
+When(/^I press submit button on home page$/) do
+  step "I press \"Refresh\""
+end
+
+Then(/^I should see movies with PG and R ratings$/) do
+  step "I should see \"PG\""
+  step "I should see \"R\""
+end
+
+Then(/^I should not see other movies$/) do
+  step "I should see \"PG-13\""
+  step "I should see \"G\""
+end
+
+
 Then /I should see all the movies/ do
+    Movie.count(:all).should == 10
   # Make sure that all the movies in the app are visible in the table
-  fail "Unimplemented"
+  #fail "Unimplemented"
 end
